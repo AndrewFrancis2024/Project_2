@@ -28,9 +28,7 @@ HOTEL_BUDGET = 850
 # finding the route
 def temp_route(route):  # a permutation
     """This will find the average temp for a certain route"""
-    for i in range(len(route)):
-        city = route[i]
-        temp_list = [city_temps[city][i] for i in range(len(route))]
+    temp_list = [city_temps[route[i]][i] for i in range(len(route))]
     return sum(temp_list)/len(route)  # average temp of route
 
 
@@ -45,7 +43,7 @@ def best_route(all_routes):
     return best, max_temp
 
 
-our_route, best_avg_temp = best_route((permutations(city_temps.keys())))
+our_route, best_temp = best_route((permutations(city_temps.keys())))
 
 
 # finding the hotel
@@ -66,6 +64,6 @@ def list_hotel(lst):
 if __name__ == "__main__":
     cities = list(city_temps.keys())
     # ..
-    print(f'Here is your best route: {str(our_route)[1:-1]} the average of the daily max temp. is {best_avg_temp}F')
+    print(f'Here is your best route: {str(our_route)[1:-1]} the average of the daily max temp. is {best_temp}F')
     print(f'To max out your hotel budget, stay at these hotels:'
           f' {", ".join((list_hotel(find_max())))},\ntotaling ${sum(find_max())}')
