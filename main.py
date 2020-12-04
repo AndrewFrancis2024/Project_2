@@ -28,11 +28,10 @@ HOTEL_BUDGET = 850
 # finding the route
 def temp_route(route):  # a permutation
     """This will find the average temp for a certain route"""
-    temp = 0
-    for i in range(len(route)):  # 0, 1, 2, 3, 4
+    for i in range(len(route)):
         city = route[i]
-        temp += city_temps[city][i]
-    return temp/len(route) #average temp of route
+        temp_list = [city_temps[city][i] for i in range(len(route))]
+    return sum(temp_list)/len(route)  # average temp of route
 
 
 def best_route(all_routes):
@@ -40,32 +39,27 @@ def best_route(all_routes):
     max_temp = 0
     best = None
     for r in all_routes:
-        avg_temp = temp_route(r)
-        if max_temp < avg_temp:
-            max_temp = avg_temp
+        if max_temp < temp_route(r):
+            max_temp = temp_route(r)
             best = r
     return best, max_temp
 
 
 our_route, best_avg_temp = best_route((permutations(city_temps.keys())))
 
+
 # finding the hotel
 def find_max():
     """ This will give us the best combination for which hotels
     to stay to use as much of our budget as possible."""
-    days = len(city_temps)
     test_hotels = list(filter(lambda x: sum(x) <= HOTEL_BUDGET,
-                              (combinations_with_replacement(hotel_rates.values(), days))))
+                              (combinations_with_replacement(hotel_rates.values(), len(city_temps)))))
     return max(test_hotels)
 
 
 def list_hotel(lst):
     """This returns the names of the hotels for the best fitting our budget"""
-    hotels = []
-    for i in lst:
-        for key, value in hotel_rates.items():
-            if i == value:
-                hotels.append(key)
+    hotels = [key for i in lst for key, value in hotel_rates.items() if i == value]
     return hotels
 
 
@@ -73,6 +67,5 @@ if __name__ == "__main__":
     cities = list(city_temps.keys())
     # ..
     print(f'Here is your best route: {str(our_route)[1:-1]} the average of the daily max temp. is {best_avg_temp}F')
-
     print(f'To max out your hotel budget, stay at these hotels:'
           f' {", ".join((list_hotel(find_max())))},\ntotaling ${sum(find_max())}')
